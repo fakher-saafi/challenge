@@ -1,0 +1,361 @@
+swagger: '2.0'
+info:
+  description: This is the api for the Celonis Programming Challenge 1
+  version: 1.0.0
+  title: MarsGate API Design
+host: www.marsgate.com
+basePath: /api
+schemes:
+  - https
+paths:
+  /applications:
+    get:
+      tags:
+        - applications
+      summary: list user related applications
+      description: ''
+      operationId: listApplication
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApplicationResourceLight'
+        '401':
+              $ref: '#/responses/UnauthorizedError'       
+    post:
+      tags:
+        - applications
+      summary: Create a new application
+      description: ''
+      operationId: createApplication
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: application to create
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationResourceLight'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApplicationResourceLight'
+        '405':
+          description: Invalid input
+        '401':
+          $ref: '#/responses/UnauthorizedError'  
+          
+  '/applications/{id}':
+    get:
+      tags:
+        - applications
+      summary: get an application by id
+      description: ''
+      operationId: getApplication
+      parameters:
+        - name: id
+          in: path
+          description: id of application to return
+          required: true
+          type: string
+          format: uuid
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApplicationResourceLight'
+        '404':
+          description: not found
+        '401':
+              $ref: '#/responses/UnauthorizedError'          
+    put:
+      tags:
+        - applications
+      summary: update an application by id
+      description: ''
+      operationId: updateApplication
+      parameters:
+        - name: id
+          in: path
+          description: id of application to update
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: body
+          description: updated application
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationResourceLight'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApplicationResourceLight'
+        '404':
+          description: not found
+        '401':
+              $ref: '#/responses/UnauthorizedError'          
+    delete:
+      tags:
+        - applications
+      summary: delete an application by id
+      description: ''
+      operationId: deleteApplication
+      parameters:
+        - name: id
+          in: path
+          description: id of application to delete
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: not found
+        '401':
+              $ref: '#/responses/UnauthorizedError'
+              
+  '/applications/{id}/upload':      
+    put:
+      tags:
+      - applications
+      summary: uploads a cv
+      operationId: uploadFile
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      parameters:
+      - name: applicationID
+        in: path
+        description: ID of application to update
+        required: true
+        type: integer
+        format: int64
+      - name: additionalMetadata
+        in: formData
+        description: Additional data to pass to server
+        required: false
+        type: string
+      - name: file
+        in: formData
+        description: file to upload
+        required: false
+        type: file
+      responses:
+        200:
+          description: successful operation
+        '401':
+              $ref: '#/responses/UnauthorizedError'          
+         
+  '/applications/{id}/personaldetails':      
+    put:
+      tags:
+        - applications
+      summary: update an application personal details by id
+      description: ''
+      operationId: updatePersonalDetails
+      parameters:
+        - name: id
+          in: path
+          description: id of application to update
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: body
+          description: updated application
+          required: true
+          schema:
+            $ref: '#/definitions/PersonalDetails'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PersonalDetails'
+        '404':
+          description: not found 
+        '401':
+              $ref: '#/responses/UnauthorizedError'          
+          
+  '/applications/{id}/essay':      
+    put:
+      tags:
+        - applications
+      summary: update an application essay by id
+      description: ''
+      operationId: updateEssay
+      parameters:
+        - name: id
+          in: path
+          description: id of application to update
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: body
+          description: updated task
+          required: true
+          schema:
+            $ref: '#/definitions/Essay'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Essay'
+        '404':
+          description: not found  
+        '401':
+              $ref: '#/responses/UnauthorizedError'
+  '/applications/{id}/summary':      
+    get:
+      tags:
+        - applications
+      summary: get an application by id
+      description: ''
+      operationId: getApplicationSummary
+      parameters:
+        - name: id
+          in: path
+          description: id of application to return
+          required: true
+          type: string
+          format: uuid
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApplicationResourceFull'
+        '404':
+          description: not found
+        '401':
+              $ref: '#/responses/UnauthorizedError'                 
+securityDefinitions:
+  basicAuth:
+    type: basic
+# To apply Basic auth to the whole API:
+security:
+  - basicAuth: []
+responses:
+  UnauthorizedError:
+    description: Authentication information is missing or invalid
+    headers:
+      WWW_Authenticate:
+        type: string  
+definitions:
+  ApplicationResourceFull:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      state:
+        type: string
+      progress:
+        type: string 
+      Resume:
+        type: object 
+      PersonelDetails:
+        type: object  
+      Essay:
+        type: object
+      userId:
+        type: integer
+      creationDate:
+        type: string
+        format: date-time
+  ApplicationResourceLight:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      status:
+        type: string
+        description: Application Status
+        enum:
+        - InProgress
+        - Submited
+        - Canceled
+      progress:
+        type: string
+      userId:
+        type: integer
+      creationDate:
+        type: string
+        format: date-time      
+  PersonalDetails:     
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string   
+      age:
+        type: integer     
+      applicationId:
+        type: integer   
+      creationDate:
+        type: string
+        format: date-time
+  Essay:     
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      essay:
+        type: string
+      applicationId:
+        type: integer   
+      creationDate:
+        type: string
+        format: date-time
+  Resume:     
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      path:
+        type: string
+      applicationId:
+        type: integer   
+      creationDate:
+        type: string
+        format: date-time        

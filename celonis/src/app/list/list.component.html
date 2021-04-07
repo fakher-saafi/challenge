@@ -1,0 +1,36 @@
+<mat-toolbar color="primary">
+  <span>List of Tasks</span>
+</mat-toolbar>
+<div style="width: 96%;margin-left: 2%; margin-top: 20px;">
+  <ng-container matColumnDef="actions" style="float: right;">
+    <mat-header-cell>
+      <button mat-icon-button color="primary"(click)="addNew()">
+        <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
+      </button>
+    </mat-header-cell>
+  </ng-container>
+  <mat-divider></mat-divider>
+  <mat-list *ngFor="let d of wsData">
+    <div (click)="startEdit(d)">
+      <h5>Count from {{ d.x }} to {{ d.y }}</h5>
+      <h6>his task counts from a given input X to given input Y.</h6>
+      <h5 style="color: blue;">{{ d.status }}</h5>
+    </div>
+    <div style="float: right; margin-top: -60px;">
+        <button *ngIf="d.status == 'Executing'" mat-flat-button color="primary" (click)="cancelItem(d)">Cancel</button>
+        <button *ngIf="d.status != 'Executing'" mat-flat-button color="accent" (click)="deleteItem(d)">Delete</button>
+    </div>
+    <mat-divider></mat-divider>
+  </mat-list><mat-list *ngFor="let d of storedObj">
+    <div (click)="startConfigure(d)">
+      <h5>Count from {{ d.x }} to {{ d.y }}</h5>
+      <h6>his task counts from a given input X to given input Y.</h6>
+      <h5 style="color: blue;">{{ d.status }}</h5>
+    </div>
+    <div style="float: right; margin-top: -60px;">
+        <button mat-flat-button color="accent" (click)="deleteItem(d);">Delete</button>
+    </div>
+    <mat-divider></mat-divider>
+  </mat-list>
+
+</div>

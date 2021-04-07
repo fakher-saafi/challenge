@@ -1,0 +1,52 @@
+<mat-toolbar color="primary">
+  <mat-icon (click)="goToList()">keyboard_backspace</mat-icon>
+  <span>&nbsp;Task Wizard - {{ stepTittle }}</span>
+</mat-toolbar>
+
+<div *ngIf="showStep == 2">
+  <div class="layout"  style="width: 40%;margin-left: 30%;">
+    <h5>Please input the configuration for Count from X to Y task.</h5>
+
+    <form class="mat-dialog-content" (submit)="createTask()" [formGroup]="createForm">
+      <div class="form">
+        <mat-form-field color="accent">
+          <input matInput type="number" placeholder="Counting from number" [(ngModel)]="data.x" formControlName="xValue">
+          <mat-error>{{getXErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form">
+        <mat-form-field color="accent">
+          <input matInput type="number" placeholder="Counting to number" [(ngModel)]="data.y" formControlName="yValue">
+          <mat-error>{{getYErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+    <button mat-flat-button color="primary" [disabled]="!createForm.valid" style="float: right;" type="submit">Next</button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="showStep == 3">
+  <div class="layout"  style="width: 40%;margin-left: 30%;">
+    <h5>Do you want to execute the tast now?</h5>
+
+    <button mat-flat-button color="primary" (click)="executeTask()" >Yes</button>
+  </div>
+</div>
+
+<div *ngIf="showStep == 4">
+  <div class="layout"  style="width: 40%;margin-left: 30%;">
+    <h5>Executing now..</h5>
+    <h5>We are currently at number  {{wsData.x}} / {{wsData.y}}</h5>
+    <mat-spinner ></mat-spinner><br><br>
+    <button mat-flat-button color="primary" (click)="cancelTaskExec()" >Cancel execution</button>
+  </div>
+</div>
+
+<div *ngIf="showStep == 5">
+  <div class="layout"  style="width: 40%;margin-left: 30%;">
+    <h5>Task finished execution successfully.</h5>
+    <h5>Counted from {{ data.x }} to {{ data.y }}</h5>
+  </div>
+</div>
